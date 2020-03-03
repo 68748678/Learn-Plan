@@ -1,2 +1,2 @@
 # KingY_python
-KingY is used tolearn python
+KingY is used to learn python
