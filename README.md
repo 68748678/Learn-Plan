@@ -1,2 +1,2 @@
-# KingY_python
-KingY is used to learn python
+# Learn-Plan
+This project is used to learn technology.
