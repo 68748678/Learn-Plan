@@ -1,0 +1,31 @@
+Oracle密码默认180天会过期，这样对于开发过程有些麻烦烦，所以需要去掉过期策略。
+
+第一步、登录Oracle数据库，使用sysdba账号
+
+su - oracle  --打开oracle，注意'-'符号的前后空格
+
+sqlplus / as sysdba   --使用sysdba用户登录
+
+第二步、查看用户的proifle是哪个，一般是default
+
+SELECT username,PROFILE FROM dba_users;
+
+第三步、查看指定概要文件（如default）的密码有效期设置
+
+SELECT * FROM dba_profiles s WHERE s.profile='DEFAULT' AND resource_name='PASSWORD_LIFE_TIME';
+
+第四步、将密码有效期由默认的180天修改成无限制
+
+ALTER PROFILE DEFAULT LIMIT PASSWORD_LIFE_TIME UNLIMITED;
+
+修改之后不需要重启动数据库，会立即生效。
+
+修改后，还没有被提示ORA-28002警告的帐户不会再碰到同样的提示；
+
+已经被提示的帐户必须再改一次密码，使用sysdba账号登录，然后修改用户密码。
+
+su - oracle  --打开oracle，注意'-'符号的前后空格
+
+sqlplus / as sysdba   --使用sysdba用户登录
+
+ALTER USER <user> IDENTIFIED BY <原来的密码>
