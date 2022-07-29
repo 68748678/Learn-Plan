@@ -29,3 +29,4 @@ su - oracle  --打开oracle，注意'-'符号的前后空格
 sqlplus / as sysdba   --使用sysdba用户登录
 
 ALTER USER <user> IDENTIFIED BY <原来的密码>
+
