@@ -5,26 +5,17 @@ import serial
 
 if __name__ == '__main__':
     time.time()
-    ser = serial.Serial(port='COM1', baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout='10', xonxoff=0, rtscts=0)
+    # ser = serial.serial_for_url(url='socket://192.168.1.200:502', baudrate=9600, bytesize=8, parity='N', stopbits=1, xonxoff=0)
+    ser = serial.serial_for_url(url='COM2', baudrate=9600, bytesize=8, parity='N', stopbits=1, xonxoff=0)
     print(ser.name)
-    ser.open()
     data_sheet = []
-    if ser.readline() == b'\x05':
-        ser.write(b'\x06')
-        data_sheet.append(ser.readline())
-        while ser.readline() != b'\x04':
+    val = ser.read(1)
+    if val == b'\x05':
+        while True:
             ser.write(b'\x06')
-            data_sheet.append(ser.readline())
+            if ser.read(1) ==b'\x04':
+                break
+            res = ser.readline()
+            data_sheet.append(res)
         print('读取完毕')
-    print(data_sheet)
-    # 用户输入ASCII码，并将输入的数字转为整型
-    a = int(input("请输入一个ASCII码: "))
-    print(a)
-    print(a, " 对应的字符为", str(chr(a)))
-    if chr(a) == chr(int('5')):
-        print(str(a)[-1])
-        print("yes")
-    else:
-        print(str(a)[-1])
-        print("no")
-    # print(data)
+        print(data_sheet)
