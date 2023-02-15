@@ -18,15 +18,14 @@ class ControlBoard(QMainWindow, Ui_Form):
         self.setupUi(self)
         # set General
         self.trans = QTranslator(self)
-        self.comboBox_displayLanguage.setCurrentIndex(settings.value('General/language', type=int))
-        self.index_changed()
         self.comboBox_displayLanguage.currentIndexChanged.connect(self.index_changed)
-        self.checkBox.setChecked(settings.value('General/run_on_system_startup', type=bool))
+        self.comboBox_displayLanguage.setCurrentIndex(settings.value('General/language', type=int))
         self.checkBox.stateChanged.connect(self.check_state_run_on_system_startup)
-        self.checkBox_2.setChecked(settings.value('General/auto_backup', type=bool))
+        self.checkBox.setChecked(settings.value('General/run_on_system_startup', type=bool))
         self.checkBox_2.stateChanged.connect(self.check_state_auto_backup)
-        self.checkBox_3.setChecked(settings.value('General/tray_menu', type=bool))
+        self.checkBox_2.setChecked(settings.value('General/auto_backup', type=bool))
         self.checkBox_3.stateChanged.connect(self.check_state_tray_menu)
+        self.checkBox_3.setChecked(settings.value('General/tray_menu', type=bool))
         self.lineEdit_filePath.setText(settings.value('General/config', type=str))
         self.pushButton_openFolder.clicked.connect(self.open_ini_folder)
         self.pushButton_openFile.clicked.connect(self.open_ini_file)
@@ -101,6 +100,8 @@ class ControlBoard(QMainWindow, Ui_Form):
     def general_restore_default(self):
         self.comboBox_displayLanguage.setCurrentIndex(0)
         self.checkBox.setChecked(True)
+        self.checkBox_2.setChecked(True)
+        self.checkBox_3.setChecked(True)
         self.lineEdit_filePath.setText('backend_config.ini')
         print('default restore default')
 
