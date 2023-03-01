@@ -106,12 +106,17 @@ class ControlBoard(QMainWindow, Ui_Form):
         print('default restore default')
 
     def form_restore_default(self):
+        self.comboBox_displayLanguage.setCurrentIndex(0)
+        self.checkBox.setChecked(True)
+        self.checkBox_2.setChecked(True)
+        self.checkBox_3.setChecked(True)
+        self.lineEdit_filePath.setText('backend_config.ini')
         print('form restore default')
 
     def change_interface_font(self):
-        '''font = QFont()
+        """font = QFont()
         font.setFamily(self.pushButton_interfaceFont.text())
-        font.setPointSize(9)'''
+        font.setPointSize(9)"""
         # font = self.pushButton_interfaceFont.font()
         form_font = QFontDialog(self.pushButton_interfaceFont.font(), self)
 
@@ -129,7 +134,7 @@ class ControlBoard(QMainWindow, Ui_Form):
         theme_color = QColorDialog(self)
         # font.getFont()
         if theme_color.exec():
-            self.pushButton_themeColor.setIcon(theme_color.selectedColor().name())
+            # self.pushButton_themeColor.setIcon(theme_color.selectedColor().name())
             print(theme_color.selectedColor().name())
             print(theme_color.currentColor().name())
 
