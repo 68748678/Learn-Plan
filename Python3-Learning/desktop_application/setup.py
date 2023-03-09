@@ -2,13 +2,13 @@
 # -*- coding:utf-8 -*-
 import os.path
 
-from PyQt6 import QtCore, QtGui
+from PyQt6 import QtCore
 import sys
-from PyQt6.QtCore import QEventLoop, QTimer, QSettings, QTranslator
-from PyQt6.QtGui import QFont
-from PyQt6.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox, QFontDialog, QColorDialog
+from PyQt6.QtCore import QSettings, QTranslator, QCoreApplication
+from PyQt6.QtGui import QFont, QPixmap, QColor, QIcon
+from PyQt6.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox, QFontDialog, QColorDialog, QMenu, \
+    QSystemTrayIcon
 
-import backend
 from backend import Ui_Form
 
 
@@ -35,11 +35,29 @@ class ControlBoard(QMainWindow, Ui_Form):
         self.pushButton_interfaceFont.setText(QFont(settings.value('General/font')).family() + ', ' + str(QFont(settings.value('General/font')).pointSize()))
         self.pushButton_interfaceFont.setFont(settings.value('General/font'))
         self.pushButton_interfaceFont.clicked.connect(self.change_interface_font)
-        self.pushButton_themeColor.setText('自定义')
+        self.pushButton_themeColor.setText('Custom')
+        self.icon_color = QPixmap(16, 16)
+        self.icon_color.fill(QColor(settings.value('Form/theme_color', type=str)))
+        self.pushButton_themeColor.setIcon(QIcon(self.icon_color))
         self.pushButton_themeColor.clicked.connect(self.change_theme_color)
         self.pushButton_restoreDefault2.clicked.connect(self.form_restore_default)
         # set Setup
         # set About
+        # set SystemTrayMenu
+        self.trayIconMenu = QMenu()
+        self.trayIconMenu.addAction('&显示(Show)', self.show_gui)
+        self.trayIconMenu.addSeparator()
+        self.trayIconMenu.addAction('&设置(Setup)')
+        self.trayIconMenu.addAction('&帮助(Help)')
+        self.trayIconMenu.addAction('&检查更新(Check for updates)')
+        self.trayIconMenu.addSeparator()
+        self.trayIconMenu.addAction('&重新启动(Restart)')
+        self.trayIconMenu.addAction('&退出(Exit)', self.quit_gui)
+        self.trayIcon = QSystemTrayIcon()
+        self.trayIcon.setContextMenu(self.trayIconMenu)
+        self.trayIcon.setIcon(QIcon(self.icon_color))
+        self.trayIcon.setToolTip('软件设置')
+        self.trayIcon.show()
 
     def check_state_run_on_system_startup(self):
         if self.checkBox.checkState() == QtCore.Qt.CheckState.Unchecked:
@@ -134,9 +152,18 @@ class ControlBoard(QMainWindow, Ui_Form):
         theme_color = QColorDialog(self)
         # font.getFont()
         if theme_color.exec():
-            # self.pushButton_themeColor.setIcon(theme_color.selectedColor().name())
+            self.icon_color.fill(QColor(theme_color.selectedColor().name()))
+            self.pushButton_themeColor.setIcon(QIcon(self.icon_color))
+            self.trayIcon.setIcon(QIcon(self.icon_color))
+            settings.setValue('Form/theme_color', theme_color.currentColor().name())
             print(theme_color.selectedColor().name())
-            print(theme_color.currentColor().name())
+
+    def show_gui(self):
+        self.showNormal()
+        self.activateWindow()
+
+    def quit_gui(self):
+        QCoreApplication.instance().quit()
 
 
 if __name__ == "__main__":
